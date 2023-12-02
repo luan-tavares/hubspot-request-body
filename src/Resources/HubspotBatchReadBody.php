@@ -12,7 +12,7 @@ use LTL\HubspotRequestBody\HubspotBody;
  * @method static $this properties(string ...$property)
  * @method $this properties(string ...$property)
  */
-class HubspotBatchGetBody extends HubspotBody
+class HubspotBatchReadBody extends HubspotBody
 {
-    protected string $resource = "batch-get";
+    protected string $resource = "batch-read";
 }

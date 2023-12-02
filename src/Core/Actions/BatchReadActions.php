@@ -3,12 +3,12 @@
 namespace LTL\HubspotRequestBody\Core\Actions;
 
 use LTL\HubspotRequestBody\Core\Actions\AbstractActions;
-use LTL\HubspotRequestBody\Core\Actions\Interfaces\BatchGetActionsInterface;
+use LTL\HubspotRequestBody\Core\Actions\Interfaces\BatchReadActionsInterface;
 use LTL\HubspotRequestBody\Core\Actions\Traits\BatchIdsTrait;
 use LTL\HubspotRequestBody\Core\Actions\Traits\BatchVerifyTrait;
 use LTL\HubspotRequestBody\Core\Actions\Traits\PropertiesGetTrait;
 
-class BatchGetActions extends AbstractActions implements BatchGetActionsInterface
+class BatchReadActions extends AbstractActions implements BatchReadActionsInterface
 {
     use BatchIdsTrait, PropertiesGetTrait, BatchVerifyTrait;
 

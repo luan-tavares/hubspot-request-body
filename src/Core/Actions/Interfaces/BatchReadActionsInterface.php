@@ -2,7 +2,7 @@
 
 namespace LTL\HubspotRequestBody\Core\Actions\Interfaces;
 
-interface BatchGetActionsInterface
+interface BatchReadActionsInterface
 {
     public function ids(int ...$id): self;
     public function propertiesWithHistory(string ...$property): self;
