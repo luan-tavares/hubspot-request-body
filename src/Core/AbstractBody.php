@@ -13,7 +13,7 @@ abstract class AbstractBody
 
     protected AbstractActions $action;
 
-    private function __construct()
+    public function __construct()
     {
         $this->action = ActionFactory::build($this);
     }
