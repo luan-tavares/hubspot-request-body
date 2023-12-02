@@ -2,10 +2,9 @@
 
 namespace LTL\HubspotRequestBody\Core\Actions;
 
-use ArrayAccess;
 use LTL\HubspotRequestBody\Core\AbstractBody;
 
-abstract class AbstractActions implements ArrayAccess
+abstract class AbstractActions
 {
     protected array $data = [];
 
@@ -76,27 +75,5 @@ abstract class AbstractActions implements ArrayAccess
     protected function hasNotResetedIndex(string $index): bool
     {
         return !($this->getIndex($index) === 0);
-    }
-
-    /** ArrayAccess */
-
-    public function offsetExists(mixed $offset): bool
-    {
-        return array_key_exists($offset, $this->data);
-    }
-
-    public function offsetGet(mixed $offset): mixed
-    {
-        return $this->data[$offset];
-    }
-
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        $this->data[$offset] = $value;
-    }
-
-    public function offsetUnset(mixed $offset): void
-    {
-        unset($this->data[$offset]);
     }
 }

@@ -38,7 +38,7 @@ class SearchActions extends AbstractActions implements SearchInterface
 
     private function filter(string $property, string $operator, array|string|int|null $value = null, string|int|null $highValue = null): self
     {
-        $filterGroups = $this['filterGroups'];
+        $filterGroups = @$this->data['filterGroups'] ?? [];
         $filterGroupIndex = $this->getIndex('group');
         $filterIndex = $this->getIndex('filter');
 
@@ -139,14 +139,11 @@ class SearchActions extends AbstractActions implements SearchInterface
 
     private function sortBy(string $property, string $direction): self
     {
-        $sorts = $this['sorts'];
 
-        $sorts[] =  [
+        return $this->push('sorts', [
             'propertyName' => $property,
             'direction' => $direction
-        ];
-
-        return $this->set('sorts', $sorts);
+        ]);
     }
 
     public function sortAsc(string $property): self
