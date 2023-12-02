@@ -11,7 +11,7 @@ trait BatchVerifyTrait
     {
         $maxBatch = BatchLimitHelper::get();
 
-        if(count($this['inputs']) > $maxBatch) {
+        if(count($this->data['inputs']) > $maxBatch) {
             throw new HubspotBodyException("Batch input can't more {$maxBatch} items.");
         }
     }

@@ -4,7 +4,7 @@ namespace LTL\HubspotRequestBody\Core;
 
 use Error;
 use LTL\HubspotRequestBody\Core\Actions\AbstractActions;
-use LTL\HubspotRequestBody\Core\Factory\BodyFactory;
+use LTL\HubspotRequestBody\Core\Factory\ActionFactory;
 use LTL\HubspotRequestBody\Exceptions\HubspotBodyException;
 
 abstract class AbstractBody
@@ -15,6 +15,7 @@ abstract class AbstractBody
 
     private function __construct()
     {
+        $this->action = ActionFactory::build($this);
     }
 
     private function __clone()
@@ -35,7 +36,7 @@ abstract class AbstractBody
 
     public static function __callStatic($method, $arguments)
     {
-        return BodyFactory::build(static::class)->{$method}(...$arguments);
+        return (new static)->{$method}(...$arguments);
     }
 
     public function __toString()
