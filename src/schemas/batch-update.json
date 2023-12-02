@@ -1,0 +1,7 @@
+{
+    "class": "HubspotBatchUpdateBody",
+    "action": "BatchUpdateActions",
+    "template": {
+        "inputs": []
+    }
+}

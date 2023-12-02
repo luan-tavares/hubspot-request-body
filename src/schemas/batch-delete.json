@@ -1,0 +1,7 @@
+{
+    "class": "HubspotBatchDeleteBody",
+    "action": "BatchDeleteActions",
+    "template": {
+        "inputs": []
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "class": "HubspotCrmUpdateBody",
+    "action": "CrmUpdateActions",
+    "template": {
+        "properties": []
+    }
+}

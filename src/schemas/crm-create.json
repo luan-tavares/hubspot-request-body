@@ -1,0 +1,7 @@
+{
+    "class": "HubspotCrmCreateBody",
+    "action": "CrmCreateActions",
+    "template": {
+        "properties": []
+    }
+}

@@ -1,0 +1,191 @@
+#!/usr/bin/env php
+<?php
+
+
+$dir = __DIR__.'/vendor';
+
+if (!file_exists($dir.'/autoload.php')) {
+    $dir = __DIR__.'/../vendor';
+}
+
+if (!file_exists($dir.'/autoload.php')) {
+    $dir = __DIR__.'/../../vendor';
+}
+
+if (!file_exists($dir.'/autoload.php')) {
+    echo 'Autoload not found.';
+
+    exit(1);
+}
+
+use LTL\HubspotRequestBody\Config;
+use LTL\HubspotRequestBody\Helpers\ActionNamespaceHelper;
+
+require $dir.'/autoload.php';
+
+
+$basePath = Config::BASE_PATH;
+
+$template = file_get_contents($basePath . '/src/stubs/resource.stub');
+
+$files = glob($basePath .'/src/schemas/*.json');
+
+$resources = array_map(function ($path) {
+    preg_match('/schemas\/(.*?)\.json/', $path, $match);
+   
+    return $match[1];
+}, $files);
+
+$i = $j = $totalActions = 0;
+
+$resourcePath = "{$basePath}/src/Resources";
+
+foreach ($resources as $resource) {
+    $i++;
+    $j = 0;
+    $schema = json_decode(file_get_contents($basePath . "/src/schemas/{$resource}.json"));
+
+    $content = $template;
+
+    $content = str_replace('{{class}}', $schema->class, $content);
+    $content = str_replace('{{name}}', $resource, $content);
+
+    $actionClass = ActionNamespaceHelper::get($schema->action);
+
+    $reflectionClass = new ReflectionClass($actionClass);
+
+    $interfaces = $reflectionClass->getInterfaceNames();
+
+    foreach ($interfaces as $interface) {
+        $isActionInterface = preg_match('/^LTL\\\HubspotRequestBody\\\Core\\\Actions\\\Interfaces\\\.*$/i', $interface, $match);
+        
+        if($isActionInterface) {
+            $actionInterface = current($match);
+            break;
+        }
+    }
+
+    $reflectionInterface = new ReflectionClass($actionInterface);
+    
+    $reflectionMethods = $reflectionInterface->getMethods(ReflectionMethod::IS_PUBLIC);
+
+    $doc = '';
+    
+    foreach ($reflectionMethods as $reflectionMethod) {
+        $j++;
+        $totalActions++;
+ 
+        $params = writeParams($reflectionMethod);
+        $action = $reflectionMethod->name;
+    
+        $doc .= " * @method static \$this {$action}({$params})\n";
+
+        $doc .= " * @method \$this {$action}({$params})\n";
+
+    }
+
+    $content = str_replace('{{docs}}', $doc, $content);
+
+    if (!is_dir($resourcePath)) {
+        mkdir($resourcePath, 0775);
+    }
+
+    file_put_contents("{$resourcePath}/{$schema->class}.php", $content);
+
+    $status = str_pad($i, 2, '0', STR_PAD_LEFT) ."▕ {$resource} ";
+
+    $size = mb_strlen($status);
+
+    dump($status . str_repeat('_', (40-$size)) .'  '. str_pad($j, 2, '0', STR_PAD_LEFT) .' actions');
+
+
+}
+
+
+$status = 'Total actions ';
+$size = mb_strlen($status);
+dump(str_repeat(' ', (40-$size)) . $status ." {$totalActions} actions");
+
+function writeParams(ReflectionMethod $reflectionMethod): string
+{
+    $reflectionParams = $reflectionMethod->getParameters();
+
+    $params = array_map(function (ReflectionParameter $reflectionParameter) {
+        $prefix = getTypes($reflectionParameter);
+
+        $suffix = getDefaultValue($reflectionParameter);
+
+       
+
+        return "{$prefix}\${$reflectionParameter->name}{$suffix}";
+    }, $reflectionParams);
+
+
+    return implode(', ', $params);
+}
+
+function getDefaultValue(ReflectionParameter $reflectionParameter): string
+{
+    if(!$reflectionParameter->isDefaultValueAvailable()) {
+        return '';
+    }
+
+    $defaultValue = $reflectionParameter->getDefaultValue();
+
+    if(is_string($defaultValue)) {
+        $defaultValue = "\"{$defaultValue}\"";
+    }
+
+    if(is_null($defaultValue)) {
+        $defaultValue = 'null';
+    }
+
+    if(is_array($defaultValue)) {
+        $defaultValue = json_encode($defaultValue);
+    }
+    
+    return " = {$defaultValue}";
+}
+
+
+function getTypes(ReflectionParameter $reflectionParameter): string
+{
+    $reflectionType = $reflectionParameter->getType();
+
+    $parameter = '';
+    
+    if ($reflectionType instanceof ReflectionUnionType) {
+        $names = buildArrayTypes($reflectionType);
+        $parameter = implode('|', $names);
+    }
+
+    if ($reflectionType instanceof ReflectionIntersectionType) {
+        $names = buildArrayTypes($reflectionType);
+        $parameter = implode('&', $names);
+    }
+
+    if ($reflectionType instanceof ReflectionNamedType) {
+        $parameter = $reflectionType->getName();
+    }
+
+    if($reflectionType->allowsNull()) {
+        $parameter .= '|null';
+    }
+
+    $parameter .= ' ';
+
+    if($reflectionParameter->isVariadic()) {
+        $parameter .= '...';
+    }
+
+    return $parameter;
+}
+
+function buildArrayTypes(ReflectionUnionType|ReflectionIntersectionType $reflectionType): array
+{
+    $types = $reflectionType->getTypes();
+
+    return array_map(function ($type) {
+        return $type->getName();
+    }, $types);
+}

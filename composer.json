@@ -1,0 +1,53 @@
+{
+    "name": "luan-tavares/hubspot-request-body",
+    "license": "MIT",
+    "description": "Hubspot Request Body Constructor",
+    "keywords": [
+        "hubspot",
+        "api",
+        "integration"
+    ],
+    "type": "library",
+    "authors": [
+        {
+            "name": "Luan Tavares Lourenço",
+            "email": "luan.tavares.lourenco@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "LTL\\HubspotRequestBody\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LTL\\HubspotRequestBody\\Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/resource"
+    ],
+    "require": {
+        "php": "^8.2",
+        "nesbot/carbon": "^2.62"
+    },
+    "require-dev": {
+        "luan-tavares/simple-deploy": "^1.0",
+        "larapack/dd": "1.*",
+        "phpunit/phpunit": "^10"
+    },
+    "scripts": {
+        "deploy-tag": [
+            "LTL\\Deploy\\DeployTag::execute"
+        ],
+        "deploy": [
+            "LTL\\Deploy\\Deploy::execute"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true
+        }
+    }
+}

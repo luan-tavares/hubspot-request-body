@@ -1,0 +1,13 @@
+{
+    "class": "HubspotSearchBody",
+    "action": "SearchActions",
+    "template": {
+        "after": 0,
+        "limit": 100,
+        "filterGroups": [
+            {
+                "filters": []
+            }
+        ]
+    }
+}

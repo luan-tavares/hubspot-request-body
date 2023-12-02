@@ -1,0 +1,12 @@
+<?php
+
+namespace LTL\HubspotRequestBody\Resources;
+
+use LTL\HubspotRequestBody\HubspotBody;
+
+/**
+{{docs}} */
+class {{class}} extends HubspotBody
+{
+    protected string $resource = "{{name}}";
+}

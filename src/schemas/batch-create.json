@@ -1,0 +1,7 @@
+{
+    "class": "HubspotBatchCreateBody",
+    "action": "BatchCreateActions",
+    "template": {
+        "inputs": []
+    }
+}

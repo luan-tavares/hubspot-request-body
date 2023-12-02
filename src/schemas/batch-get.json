@@ -1,0 +1,7 @@
+{
+    "class": "HubspotBatchGetBody",
+    "action": "BatchGetActions",
+    "template": {
+        "inputs": []
+    }
+}
