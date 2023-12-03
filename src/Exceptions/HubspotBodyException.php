@@ -17,31 +17,39 @@ class HubspotBodyException extends Exception
         $root = explode('/Exceptions/', __FILE__)[0];
     
         foreach ($this->getTrace() as $trace) {
-            if (!array_key_exists('file', $trace)) {
-                continue;
+
+            if ($this->canChangeTrace($trace, $root)) {
+                $this->line = $trace['line'];
+                $this->file = $trace['file'];
+
+                return;
             }
 
-            $file = $trace['file'];
-
-            $isNotInExampleApiPath = !str_contains($file, self::APP_EXAMPLES_RELATIVE_DIR);
-
-            $isInVendorPath = str_contains($file, self::APP_VENDOR_RELATIVE_DIR);
-
-            if ($isInVendorPath && $isNotInExampleApiPath) {
-                continue;
-            }
-
-            if (str_contains($file, $root)) {
-                continue;
-            }
-
-            $this->line = $trace['line'];
-            $this->file = $trace['file'];
-            break;
         }
     }
 
+    private function canChangeTrace(array $trace, string $root): bool
+    {
+        if (!array_key_exists('file', $trace)) {
+            return false;
+        }
 
+        $file = $trace['file'];
+
+        $isNotInExampleApiPath = !str_contains($file, self::APP_EXAMPLES_RELATIVE_DIR);
+
+        $isInVendorPath = str_contains($file, self::APP_VENDOR_RELATIVE_DIR);
+
+        if ($isInVendorPath && $isNotInExampleApiPath) {
+            return false;
+        }
+
+        if (str_contains($file, $root)) {
+            return false;
+        }
+
+        return true;
+    }
 
     public static function throwIf(bool $condition, string $message): void
     {

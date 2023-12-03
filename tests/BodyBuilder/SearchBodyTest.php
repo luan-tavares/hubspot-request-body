@@ -2,38 +2,48 @@
 
 namespace LTL\Hubspot\Tests\BodyBuilder;
 
-use LTL\Hubspot\Core\BodyBuilder\SearchBuilder\SearchBuilder;
+use LTL\HubspotRequestBody\Resources\HubspotSearchBody;
 use PHPUnit\Framework\TestCase;
 
-class SearchBuilderTest extends TestCase
+class SearchBodyTest extends TestCase
 {
-    private array $base = [];
+    private array $template = [
+        'after' => 0,
+        'limit' => 100,
+        'filterGroups' => [
+            [
+                'filters' => []
+            ]
+        ]
+    ];
 
-    protected function setUp(): void
+    public function testIfDefaultIsCorrect()
     {
-        $this->base = (new SearchBuilder)->get();
+        $requestBody = new HubspotSearchBody;
+
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfAfterIsCorrect()
     {
-        $after = 'xyz';
+        $after = '1000';
 
-        $requestBody = SearchBuilder::after($after);
+        $requestBody = HubspotSearchBody::after($after);
 
-        $this->base['after'] = $after;
+        $this->template['after'] = $after;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfLimitIsCorrect()
     {
         $limit = 40;
 
-        $requestBody = SearchBuilder::limit($limit);
+        $requestBody = HubspotSearchBody::limit($limit);
 
-        $this->base['limit'] = $limit;
+        $this->template['limit'] = $limit;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterEqualIsCorrect()
@@ -48,14 +58,13 @@ class SearchBuilderTest extends TestCase
                     ]
                 ]
             ]
-            
         ];
 
-        $requestBody = SearchBuilder::filterEqual('name', 10);
+        $requestBody = HubspotSearchBody::filterEqual('name', 10);
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterHasIsCorrect()
@@ -72,11 +81,11 @@ class SearchBuilderTest extends TestCase
             
         ];
 
-        $requestBody = SearchBuilder::filterHas('name');
+        $requestBody = HubspotSearchBody::filterHas('name');
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterNotHasIsCorrect()
@@ -93,11 +102,11 @@ class SearchBuilderTest extends TestCase
             
         ];
 
-        $requestBody = SearchBuilder::filterNotHas('name');
+        $requestBody = HubspotSearchBody::filterNotHas('name');
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfSortAscIsCorrect()
@@ -106,18 +115,14 @@ class SearchBuilderTest extends TestCase
             [
                 'propertyName' => 'name',
                 'direction' => 'ASCENDING'
-            ],
-            [
-                'propertyName' => 'name2',
-                'direction' => 'ASCENDING'
             ]
         ];
 
-        $requestBody = SearchBuilder::sortAsc('name')->sortAsc('name2');
+        $requestBody = HubspotSearchBody::sortAsc('name');
 
-        $this->base['sorts'] = $sort;
+        $this->template['sorts'] = $sort;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfPropertiesIsCorrect()
@@ -126,11 +131,11 @@ class SearchBuilderTest extends TestCase
             'a', 'b', 'c'
         ];
 
-        $requestBody = SearchBuilder::properties('a', 'b', 'c');
+        $requestBody = HubspotSearchBody::properties('a', 'b', 'c');
 
-        $this->base['properties'] = $properties;
+        $this->template['properties'] = $properties;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfSortDescIsCorrect()
@@ -142,11 +147,11 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::sortDesc('name');
+        $requestBody = HubspotSearchBody::sortDesc('name');
 
-        $this->base['sorts'] = $sort;
+        $this->template['sorts'] = $sort;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterGroupIsCorrect()
@@ -185,7 +190,7 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterHas('id')
+        $requestBody = HubspotSearchBody::filterHas('id')
             ->filterGroup(function ($builder) {
                 $builder->filterHas('name');
                 $builder->filterEqual('date', 1000);
@@ -193,9 +198,9 @@ class SearchBuilderTest extends TestCase
                 $builder->filterEqual('name2', 'lorem');
             });
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterLessIsCorrect()
@@ -212,11 +217,11 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterLess('number', 1000);
+        $requestBody = HubspotSearchBody::filterLess('number', 1000);
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterGreaterIsCorrect()
@@ -233,11 +238,11 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterGreater('number', 1000);
+        $requestBody = HubspotSearchBody::filterGreater('number', 1000);
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterGreaterOrEqualIsCorrect()
@@ -254,11 +259,11 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterGreaterOrEqual('number', 1000);
+        $requestBody = HubspotSearchBody::filterGreaterOrEqual('number', 1000);
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterLessOrEqualIsCorrect()
@@ -275,11 +280,11 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterLessOrEqual('number', 1000);
+        $requestBody = HubspotSearchBody::filterLessOrEqual('number', 1000);
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterNotEqualIsCorrect()
@@ -296,11 +301,11 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterNotEqual('property', 'value');
+        $requestBody = HubspotSearchBody::filterNotEqual('property', 'value');
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterBetweenIsCorrect()
@@ -318,11 +323,11 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterBetween('number', 1000, 2000);
+        $requestBody = HubspotSearchBody::filterBetween('number', 1000, 2000);
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterInIsCorrect()
@@ -344,13 +349,13 @@ class SearchBuilderTest extends TestCase
 
         ];
 
-        $requestBody = SearchBuilder::filterIn('number', [1,2,3])
+        $requestBody = HubspotSearchBody::filterIn('number', [1,2,3])
             ->filterHas('name');
 
             
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterNotInIsCorrect()
@@ -367,11 +372,11 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterNotIn('number', [1,2,3]);
+        $requestBody = HubspotSearchBody::filterNotIn('number', [1,2,3]);
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterContainsIsCorrect()
@@ -388,11 +393,11 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterContains('property', '*@teste');
+        $requestBody = HubspotSearchBody::filterContains('property', '*@teste');
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 
     public function testIfFilterNotContainsIsCorrect()
@@ -409,10 +414,10 @@ class SearchBuilderTest extends TestCase
             ]
         ];
 
-        $requestBody = SearchBuilder::filterNotContains('property', '*@teste');
+        $requestBody = HubspotSearchBody::filterNotContains('property', '*@teste');
 
-        $this->base['filterGroups'] = $filter;
+        $this->template['filterGroups'] = $filter;
 
-        $this->assertEquals($this->base, $requestBody->get());
+        $this->assertEquals($this->template, $requestBody->get());
     }
 }
