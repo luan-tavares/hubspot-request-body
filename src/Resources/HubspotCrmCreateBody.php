@@ -9,6 +9,8 @@ use LTL\HubspotRequestBody\HubspotBody;
  * @method $this properties(array $properties)
  * @method static $this association(int $toObjectId, int $associationId, string $associationDefinition = "HUBSPOT_DEFINED")
  * @method $this association(int $toObjectId, int $associationId, string $associationDefinition = "HUBSPOT_DEFINED")
+ * @method static $this associationUserDefined(int $toObjectId, int $associationId)
+ * @method $this associationUserDefined(int $toObjectId, int $associationId)
  * @method static $this associationWithLabels(int $toObjectId, array $associations)
  * @method $this associationWithLabels(int $toObjectId, array $associations)
  */

@@ -27,6 +27,11 @@ class CrmCreateActions extends AbstractActions implements CrmCreateActionsInterf
         return $this;
     }
 
+    public function associationUserDefined(int $toObjectId, int $associationId): self
+    {
+        return $this->association($toObjectId, $associationId, 'USER_DEFINED');
+    }
+
     public function associationWithLabels(int $toObjectId, array $associations): self
     {
         $this->push('associations', [
