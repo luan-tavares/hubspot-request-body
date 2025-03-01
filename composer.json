@@ -30,7 +30,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "nesbot/carbon": "^2.62"
+        "nesbot/carbon": "^3.0"
     },
     "require-dev": {
         "luan-tavares/simple-deploy": "^1.0",
